@@ -9,3 +9,11 @@ install:
 
 run:
 	@yarn --silent dev
+
+build:
+	@yarn --silent build
+
+lint:
+	@yarn --silent lint --fix
+
+check: lint build

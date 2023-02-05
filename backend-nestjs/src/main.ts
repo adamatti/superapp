@@ -16,6 +16,7 @@ const createSwagger = (app: INestApplication) => {
 
 async function bootstrap() {
   const app: INestApplication = await NestFactory.create(AppModule);
+  app.enableCors();
   app.useGlobalPipes(new ValidationPipe({ transform: true }));
 
   const guard = await app.resolve(GlobalGuard);

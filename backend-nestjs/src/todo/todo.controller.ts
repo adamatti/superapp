@@ -16,7 +16,7 @@ import { Response } from 'express';
 import { Prisma, TodoItem } from '@prisma/client';
 
 @ApiTags('Todo')
-@Controller('/todo')
+@Controller('/todo/item')
 export class TodoController {
   constructor(
     @Inject(PrismaService)
