@@ -1,0 +1,27 @@
+name: Backend-Nestjs CI
+
+defaults:
+  run:
+    working-directory: backend-nestjs
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Use Node.js 19.6
+        uses: actions/setup-node@v3
+        with:
+          node-version: 19.6
+      - name: Install dependencies
+        run: yarn --frozen-lockfile
+      - name: Lint check
+        run: yarn yarn --silent lint
+      - name: Unit tests
+        run: yarn --silent test

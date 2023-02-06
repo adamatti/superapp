@@ -1,4 +1,6 @@
-# Apps to build
+Merge my pet projects to a single repo with modules and optimize prod resources.
+
+# Apps to build/merge
 
 - todoist like
 - url shorten
