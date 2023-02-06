@@ -1,8 +1,8 @@
 /// <reference types="vite/client" />
 interface ImportMetaEnv {
-  readonly APP_ENV: string
-  readonly BACKEND_API: string
-  readonly HARDCODED_AUTHORIZATION: string
+  readonly VITE_BACKEND_API: string
+  readonly VITE_AUTH0_DOMAIN: string
+  readonly VITE_AUTH0_CLIENT_ID: string
 }
 
 interface ImportMeta {

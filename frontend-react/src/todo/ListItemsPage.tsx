@@ -1,9 +1,25 @@
+import { useAuth0 } from "@auth0/auth0-react";
 import { useQuery } from "react-query";
 import todoRepo from './todoItemsRepo';
 import { Link } from "react-router-dom";
+import config from '../config';
 
 function ListItemsPage() {
-  const { data } = useQuery("todoItems", todoRepo.list)
+  const { getAccessTokenSilently } = useAuth0();
+
+  function getToken() {
+    return getAccessTokenSilently({
+      authorizationParams: {
+        audience: `https://${config.auth0.domain}/api/v2/`,
+        scope: "read:current_user",
+      },
+    });
+  }
+
+  const { data } = useQuery("todoItems", async () => {
+    const authToken = await getToken();
+    return todoRepo.list(authToken);
+  })
 
   return (
     <>

@@ -16,6 +16,7 @@ const createSwagger = (app: INestApplication) => {
 
 async function bootstrap() {
   const app: INestApplication = await NestFactory.create(AppModule);
+  app.setGlobalPrefix('api', { exclude: ['healthcheck'] });
   app.enableCors();
   app.useGlobalPipes(new ValidationPipe({ transform: true }));
 

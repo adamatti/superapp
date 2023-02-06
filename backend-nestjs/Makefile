@@ -25,7 +25,7 @@ format: prisma-format ## format code
 lint: format ## lint rules
 	@yarn --silent lint --fix
 
-check: lint prisma-validate ## code validations
+check: lint prisma-validate build ## code validations
 
 prisma-format:
 	@yarn --silent prisma format
