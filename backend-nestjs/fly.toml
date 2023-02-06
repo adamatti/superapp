@@ -17,6 +17,8 @@ processes = []
   strategy = "immediate"
 
 [env]
+  AUTH0_AUDIENCE="https://dev-201tip5f.auth0.com/api/v2/"
+  AUTH0_ISSUER_URL="https://dev-201tip5f.auth0.com/"
 
 [experimental]
   auto_rollback = true
