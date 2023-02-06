@@ -1,5 +1,6 @@
-// FIXME remove hardcoded value
-const authorization = 'Bearer 123';
+import config from '../config';
+
+const authorization = config.hardcodedAuthorization;
 
 export interface TodoItem {
   id: number
@@ -7,7 +8,7 @@ export interface TodoItem {
 }
 
 export async function list(): Promise<TodoItem[]> {
-  const res = await fetch("http://localhost:8081/todo/item", {
+  const res = await fetch(`${config.backendAPI}/todo/item`, {
     headers: {
       authorization
     }
@@ -16,7 +17,7 @@ export async function list(): Promise<TodoItem[]> {
 }
 
 export async function findById(id: number): Promise<TodoItem> {
-  const res = await fetch(`http://localhost:8081/todo/item/${id}`, {
+  const res = await fetch(`${config.backendAPI}/todo/item/${id}`, {
     headers: {
       authorization
     }

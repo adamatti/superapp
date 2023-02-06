@@ -1,0 +1,13 @@
+dist/
+node_modules/
+
+Makefile
+.nvmrc
+.env
+.eslintrc.cjs
+Dockerfile
+.gitignore
+
+.env
+.env.development
+*.md

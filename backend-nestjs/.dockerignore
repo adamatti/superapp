@@ -1,0 +1,16 @@
+.vscode/
+!build/public-fe
+dist/
+node_modules/
+tmp/
+
+.dockerignore
+.env
+.gitignore
+.nvmrc
+.prettierrc
+Dockerfile
+fly.toml
+Makefile
+
+*.md
