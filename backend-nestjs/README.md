@@ -24,6 +24,11 @@ WIP
 - todoist like
 - url shortener
 
+# TL/DR: Planet scale (free mysql like)
+
+- Install: `brew install planetscale/tap/pscale`
+- Port forward: `make pscale-connect` (check parameters on top of `Makefile`)
+
 # References
 
 - https://fly.io/

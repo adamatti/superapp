@@ -4,6 +4,7 @@ import { AuthModule } from './auth';
 import { CoreModule } from './core';
 import { TodoModule } from './todo';
 import { join } from 'path';
+import { UrlShortenerModule } from './url-shortener';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { join } from 'path';
     CoreModule,
     AuthModule,
     TodoModule,
+    UrlShortenerModule,
   ],
   controllers: [],
   providers: [],

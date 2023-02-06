@@ -36,6 +36,9 @@ prisma-validate:
 prisma-generate: ## transform prisma schema to code
 	@yarn --silent prisma generate
 
+prisma-db-push: ## apply db changes
+	@yarn --silent prisma db push
+
 build: prisma-generate ## build bundle
 	@yarn --silent build
 
