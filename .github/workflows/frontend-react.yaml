@@ -1,8 +1,8 @@
-name: Backend-Nestjs CI
+name: Frontend-react CI
 
 defaults:
   run:
-    working-directory: backend-nestjs
+    working-directory: frontend-react
 
 on:
   push:

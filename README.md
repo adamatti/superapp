@@ -7,6 +7,13 @@ Merge my pet projects to a single repo with modules and optimize prod resources.
 - pet projects tracker
 - reader (rss, twitter)
 
+# Todo
+
+- document decisions
+  - nestjs
+  - react
+  - flyio
+
 # Done
 
 - deployed to fly.io
