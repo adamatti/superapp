@@ -1,6 +1,7 @@
 # Overall 
 
 - [ ] Add menu to show all subapps
+- [ ] Deploy to fly.io on github actions
 
 # Todo
 
