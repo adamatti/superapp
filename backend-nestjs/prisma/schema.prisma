@@ -22,11 +22,11 @@ model UrlShortenerUrl {
   createdAt   DateTime @default(now()) @map("created_at")
   updatedAt   DateTime @updatedAt @map("updated_at")
   title       String?  @db.VarChar(255)
-  url         String   @db.VarChar(255)
+  url         String   @unique @db.VarChar(255)
   description String?  @db.Text
 
-  usageCount  Int       @default(0) @map("usage_count")
-  lastUsage   DateTime? @map("last_usage")
+  usageCount Int       @default(0) @map("usage_count")
+  lastUsage  DateTime? @map("last_usage")
 
   keys UrlShortenerKey[]
 

@@ -2,12 +2,10 @@
 
 - lint: better tunning 
 - tests
-- auth
 
-# Done
+# Bugs / technical debts / enhancements
 
-- router
-- lint
+- How to better handle auth0 token (instead of keep caling `getAccessTokenSilently`)? 
 
 # References
 

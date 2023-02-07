@@ -1,7 +1,7 @@
-import ListItemsPage from "./ListItemsPage";
+import ListItemsPage from './ListItemsPage';
 
-function HomePage () {
-  return <ListItemsPage />
+function HomePage() {
+    return <ListItemsPage />;
 }
 
 export default HomePage;
