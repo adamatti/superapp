@@ -1,15 +1,4 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  HttpStatus,
-  Inject,
-  Param,
-  Patch,
-  Post,
-  Res,
-} from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpStatus, Inject, Param, Patch, Post, Res } from '@nestjs/common';
 import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { PrismaService } from '../core';
 import { Response } from 'express';
@@ -30,10 +19,7 @@ export class TodoController {
   }
 
   @Get('/:id')
-  async getOne(
-    @Param('id') id: number,
-    @Res({ passthrough: true }) res: Response,
-  ) {
+  async getOne(@Param('id') id: number, @Res({ passthrough: true }) res: Response) {
     const entry = await this.prisma.todoItem.findFirst({ where: { id } });
     if (!entry) {
       res.status(HttpStatus.NOT_FOUND).end();
@@ -45,10 +31,7 @@ export class TodoController {
   @Post()
   @ApiBody({})
   @ApiResponse({ status: HttpStatus.CREATED })
-  async create(
-    @Body() dto: Prisma.TodoItemCreateInput,
-    @Res() res: Response,
-  ): Promise<void> {
+  async create(@Body() dto: Prisma.TodoItemCreateInput, @Res() res: Response): Promise<void> {
     await this.prisma.todoItem.create({ data: dto });
     res.status(HttpStatus.CREATED).end();
   }

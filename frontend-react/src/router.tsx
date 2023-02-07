@@ -6,13 +6,13 @@ import todoRoutes from './todo/routes';
 import urlRoutes from './url-shortener/routes';
 
 const router = createBrowserRouter([
-    {
-        path: '/',
-        element: <HomePage />,
-        errorElement: <ErrorPage />,
-    },
-    ...todoRoutes,
-    ...urlRoutes,
+  {
+    path: '/',
+    element: <HomePage />,
+    errorElement: <ErrorPage />,
+  },
+  ...todoRoutes,
+  ...urlRoutes,
 ]);
 
 export default router;

@@ -5,34 +5,34 @@ import { Link } from 'react-router-dom';
 import config from '../config';
 
 function ListItemsPage() {
-    const { getAccessTokenSilently } = useAuth0();
+  const { getAccessTokenSilently } = useAuth0();
 
-    async function getToken() {
-        return await getAccessTokenSilently({
-            authorizationParams: {
-                audience: `https://${config.auth0.domain}/api/v2/`,
-                scope: 'read:current_user',
-            },
-        });
-    }
-
-    const { data } = useQuery('todoItems', async () => {
-        const authToken = await getToken();
-        return await todoRepo.list(authToken);
+  async function getToken() {
+    return await getAccessTokenSilently({
+      authorizationParams: {
+        audience: `https://${config.auth0.domain}/api/v2/`,
+        scope: 'read:current_user',
+      },
     });
+  }
 
-    return (
-        <>
-            List
-            <ul>
-                {data?.map((item) => (
-                    <li key={item.id}>
-                        <Link to={`/todo/items/${item.id}`}> {item.name} </Link>
-                    </li>
-                ))}
-            </ul>
-        </>
-    );
+  const { data } = useQuery('todoItems', async () => {
+    const authToken = await getToken();
+    return await todoRepo.list(authToken);
+  });
+
+  return (
+    <>
+      List
+      <ul>
+        {data?.map((item) => (
+          <li key={item.id}>
+            <Link to={`/todo/items/${item.id}`}> {item.name} </Link>
+          </li>
+        ))}
+      </ul>
+    </>
+  );
 }
 
 export default ListItemsPage;

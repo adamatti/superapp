@@ -14,19 +14,19 @@ import 'primeflex/primeflex.css';
 const queryClient = new QueryClient();
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
-    <React.StrictMode>
-        <QueryClientProvider client={queryClient}>
-            <Auth0Provider
-                domain={config.auth0.domain}
-                clientId={config.auth0.clientId}
-                authorizationParams={{
-                    redirect_uri: window.location.origin,
-                    audience: `https://${config.auth0.domain}/api/v2/`,
-                    scope: 'read:current_user update:current_user_metadata',
-                }}
-            >
-                <RouterProvider router={router} />
-            </Auth0Provider>
-        </QueryClientProvider>
-    </React.StrictMode>,
+  <React.StrictMode>
+    <QueryClientProvider client={queryClient}>
+      <Auth0Provider
+        domain={config.auth0.domain}
+        clientId={config.auth0.clientId}
+        authorizationParams={{
+          redirect_uri: window.location.origin,
+          audience: `https://${config.auth0.domain}/api/v2/`,
+          scope: 'read:current_user update:current_user_metadata',
+        }}
+      >
+        <RouterProvider router={router} />
+      </Auth0Provider>
+    </QueryClientProvider>
+  </React.StrictMode>,
 );

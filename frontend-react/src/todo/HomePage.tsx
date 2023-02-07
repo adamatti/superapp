@@ -1,7 +1,7 @@
 import ListItemsPage from './ListItemsPage';
 
 function HomePage() {
-    return <ListItemsPage />;
+  return <ListItemsPage />;
 }
 
 export default HomePage;

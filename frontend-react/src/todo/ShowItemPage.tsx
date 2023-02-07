@@ -5,23 +5,23 @@ import todoItemsRepo from './todoItemsRepo';
 import config from '../config';
 
 function ShowItemPage() {
-    const { getAccessTokenSilently } = useAuth0();
+  const { getAccessTokenSilently } = useAuth0();
 
-    async function getToken() {
-        return await getAccessTokenSilently({
-            authorizationParams: {
-                audience: `https://${config.auth0.domain}/api/v2/`,
-                scope: 'read:current_user',
-            },
-        });
-    }
-    const params = useParams();
-    const { data: item } = useQuery('todoItem', async () => {
-        const authToken = await getToken();
-        return await todoItemsRepo.findById(authToken, Number(params.id));
+  async function getToken() {
+    return await getAccessTokenSilently({
+      authorizationParams: {
+        audience: `https://${config.auth0.domain}/api/v2/`,
+        scope: 'read:current_user',
+      },
     });
+  }
+  const params = useParams();
+  const { data: item } = useQuery('todoItem', async () => {
+    const authToken = await getToken();
+    return await todoItemsRepo.findById(authToken, Number(params.id));
+  });
 
-    return <div>Showing Item {item?.name}</div>;
+  return <div>Showing Item {item?.name}</div>;
 }
 
 export default ShowItemPage;
