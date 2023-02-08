@@ -50,5 +50,5 @@ docker-run: docker-build ## run docker image
 		$(DOCKER_TAG)
 
 run-html: build ## run as prod
-	serve dist/ -l 8080
+	serve dist/ -l $(PORT)
 

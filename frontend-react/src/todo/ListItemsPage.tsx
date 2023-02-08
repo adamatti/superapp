@@ -1,5 +1,6 @@
 import { useAuth0 } from '@auth0/auth0-react';
 import { useQuery } from 'react-query';
+import { Message } from 'primereact/message';
 import todoRepo from './todoItemsRepo';
 import { Link } from 'react-router-dom';
 import config from '../config';
@@ -16,20 +17,26 @@ function ListItemsPage() {
     });
   }
 
-  const { data } = useQuery('todoItems', async () => {
+  const { isError, error, data } = useQuery('todoItems', async () => {
     const authToken = await getToken();
     return await todoRepo.list(authToken);
   });
+
+  if (isError) {
+    console.error(error);
+  }
 
   return (
     <>
       List
       <ul>
-        {data?.map((item) => (
-          <li key={item.id}>
-            <Link to={`/todo/items/${item.id}`}> {item.name} </Link>
-          </li>
-        ))}
+        {isError && <Message severity="error" text="There was an error loading data" />}
+        {!isError &&
+          data?.map((item) => (
+            <li key={item.id}>
+              <Link to={`/todo/items/${item.id}`}> {item.name} </Link>
+            </li>
+          ))}
       </ul>
     </>
   );

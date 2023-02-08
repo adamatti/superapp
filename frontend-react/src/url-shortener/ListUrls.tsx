@@ -1,11 +1,12 @@
 import { DataTable, type DataTableRowEditCompleteEvent } from 'primereact/datatable';
+import { Message } from 'primereact/message';
 import { Button } from 'primereact/button';
 import { useAuth0 } from '@auth0/auth0-react';
 import config from '../config';
 import { Column } from 'primereact/column';
 import { InputText } from 'primereact/inputtext';
 import { Tag } from 'primereact/tag';
-import { type ReactNode, useEffect, useState } from 'react';
+import { type ReactNode, useEffect, useState, useCallback } from 'react';
 import { type Url } from './types';
 import DeleteDialog from './DeleteDialog';
 import EditUrlDialog from './EditUrlDialog';
@@ -16,34 +17,40 @@ const baseUrl = `${config.backendAPI}/api/url-shortener/urls`;
 // TODO add other fields (e.g. usage count, last usage, create date, update date)
 function ListUrls() {
   const { getAccessTokenSilently } = useAuth0();
+  const [error, setError] = useState<Error | null>(null);
   const [editDialog, setEditDialog] = useState(false);
   const [deleteDialog, setDeleteDialog] = useState(false);
   const [url, setUrl] = useState<Url | null>(null);
   const [urls, setUrls] = useState<Url[]>([]);
 
-  async function getToken() {
+  const getToken = useCallback(async (): Promise<string> => {
     return await getAccessTokenSilently({
       authorizationParams: {
         audience: `https://${config.auth0.domain}/api/v2/`,
         scope: 'read:current_user',
       },
     });
-  }
+  }, [getAccessTokenSilently]);
 
-  async function loadRows() {
-    const authToken = await getToken();
-    const response = await fetch(baseUrl, {
-      headers: {
-        authorization: `Bearer ${authToken}`,
-      },
-    });
-    const rows = await response.json();
-    setUrls(rows);
-  }
+  const loadRows = useCallback(async (): Promise<void> => {
+    try {
+      const authToken = await getToken();
+      const response = await fetch(baseUrl, {
+        headers: {
+          authorization: `Bearer ${authToken}`,
+        },
+      });
+      const rows = await response.json();
+      setUrls(rows);
+    } catch (error) {
+      console.error(error);
+      setError(error as Error);
+    }
+  }, [getToken]);
 
   useEffect(() => {
     loadRows();
-  }, []);
+  }, [loadRows]);
 
   /**
    * Call API, persist url
@@ -160,55 +167,59 @@ function ListUrls() {
 
   return (
     <>
-      <Button label="New" icon="pi pi-plus" className="p-button-success mr-2" onClick={addNewHandler} />
-      {urls && (
-        <DataTable
-          value={urls}
-          editMode="row"
-          onRowEditComplete={onRowEditComplete}
-          dataKey="id"
-          responsiveLayout="scroll"
-          filterDisplay="row"
-          stripedRows
-          // sortMode="multiple"
-          sortField="url"
-        >
-          <Column
-            field="title"
-            header="Title"
-            filter
-            sortable
-            editor={(options) => textEditor(options)}
-            style={{ width: '20%' }}
-          />
-          <Column
-            field="description"
-            header="Description"
-            filter
-            sortable
-            editor={(options) => textEditor(options)}
-            style={{ width: '20%' }}
-          />
-          <Column
-            field="url"
-            header="Url"
-            filter
-            sortable
-            editor={(options) => textEditor(options)}
-            style={{ width: '20%' }}
-          />
-          <Column
-            field="keys"
-            header="Keys"
-            body={(options) => keysTemplate(options)}
-            editor={(options) => keysEditor(options)}
-            style={{ width: '20%' }}
-          />
-          <Column rowEditor headerStyle={{ width: '10%', minWidth: '8rem' }} bodyStyle={{ textAlign: 'center' }} />
-          <Column body={deleteBodyTemplate} exportable={false} style={{ minWidth: '8rem' }}></Column>
-        </DataTable>
+      {error && <Message severity="error" text="There was an error loading data" />}
+      {!error && (
+        <>
+          <Button label="New" icon="pi pi-plus" className="p-button-success mr-2" onClick={addNewHandler} />
+          {urls && (
+            <DataTable
+              value={urls}
+              editMode="row"
+              onRowEditComplete={onRowEditComplete}
+              dataKey="id"
+              responsiveLayout="scroll"
+              filterDisplay="row"
+              stripedRows
+              // sortMode="multiple"
+              sortField="url"
+            >
+              <Column
+                field="title"
+                header="Title"
+                filter
+                sortable
+                editor={(options) => textEditor(options)}
+                style={{ width: '20%' }}
+              />
+              <Column
+                field="description"
+                header="Description"
+                filter
+                sortable
+                editor={(options) => textEditor(options)}
+                style={{ width: '20%' }}
+              />
+              <Column
+                field="url"
+                header="Url"
+                filter
+                sortable
+                editor={(options) => textEditor(options)}
+                style={{ width: '20%' }}
+              />
+              <Column
+                field="keys"
+                header="Keys"
+                body={(options) => keysTemplate(options)}
+                editor={(options) => keysEditor(options)}
+                style={{ width: '20%' }}
+              />
+              <Column rowEditor headerStyle={{ width: '10%', minWidth: '8rem' }} bodyStyle={{ textAlign: 'center' }} />
+              <Column body={deleteBodyTemplate} exportable={false} style={{ minWidth: '8rem' }}></Column>
+            </DataTable>
+          )}
+        </>
       )}
-
       {url != null && (
         <DeleteDialog
           visible={deleteDialog}
@@ -221,17 +232,15 @@ function ListUrls() {
         />
       )}
 
-      {
-        <EditUrlDialog
-          visible={editDialog}
-          url={url}
-          onHide={() => {
-            setEditDialog(false);
-            setUrl(null);
-          }}
-          onSave={editDialogHandler}
-        />
-      }
+      <EditUrlDialog
+        visible={editDialog}
+        url={url}
+        onHide={() => {
+          setEditDialog(false);
+          setUrl(null);
+        }}
+        onSave={editDialogHandler}
+      />
     </>
   );
 }
