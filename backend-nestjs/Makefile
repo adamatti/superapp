@@ -12,11 +12,13 @@ help: ## show this help
 
 clean: ## Remove temp folders
 	@rm -rf dist
+	@rm -f package-lock.json
 
 clean-hard: clean ## clean + cached libs
 	@rm -rf node_modules
 
 install: ## install dependencies
+	@rm -f package-lock.json
 	@yarn --silent install
 
 format: prisma-format ## format code
@@ -39,7 +41,7 @@ prisma-generate: ## transform prisma schema to code
 prisma-db-push: ## apply db changes
 	@yarn --silent prisma db push
 
-build: prisma-generate ## build bundle
+build: install prisma-generate ## build bundle
 	@yarn --silent build
 
 run-prod: build ## run as prod
@@ -83,6 +85,7 @@ docker-run-only:
 docker-run: docker-build docker-run-only ## run docker image
 
 fly-deploy-image: docker-build ## Deploy to fly.io using docker image process
+	flyctl auth docker
 	docker push registry.fly.io/$(FLYIO_APP_NAME):$(RELEASE_TAG)
 	flyctl deploy --app adamatti --image registry.fly.io/$(FLYIO_APP_NAME):$(RELEASE_TAG)
 

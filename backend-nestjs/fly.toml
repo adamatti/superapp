@@ -14,7 +14,8 @@ processes = []
   PUBLIC_FOLDER="build/public-fe"
 
 [deploy]
-  strategy = "immediate"
+  # it makes the deploy fast, but creates downtime
+  # strategy = "immediate"
 
 [env]
   AUTH0_AUDIENCE="https://dev-201tip5f.auth0.com/api/v2/"
