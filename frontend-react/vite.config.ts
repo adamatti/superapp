@@ -1,11 +1,20 @@
 import { fileURLToPath, URL } from 'url';
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
+import { defineConfig } from 'vite';
+import reactRefresh from '@vitejs/plugin-react-refresh';
+import {Plugin as importToCDN, autoComplete } from 'vite-plugin-cdn-import';
 
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
-    react(),
+    importToCDN({
+      prodUrl: 'https://unpkg.com/{name}@{version}/{path}',
+      modules: [
+          autoComplete('react'),          
+          autoComplete('react-dom'),
+          // TODO add others here
+      ],
+    }),
+    reactRefresh(),
   ],
   resolve: {
     alias: {
