@@ -1,4 +1,4 @@
-import { type Url } from './types';
+import { type Url } from '../types';
 import { Dialog } from 'primereact/dialog';
 import { Button } from 'primereact/button';
 

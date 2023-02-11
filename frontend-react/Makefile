@@ -17,6 +17,8 @@ run: ## run app as dev
 
 run-dev: run ## run app as dev
 
+run-prod: run-html ## run as prod
+
 run-html: build ## run as prod
 	serve dist/ -l $(PORT)
 

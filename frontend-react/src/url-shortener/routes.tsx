@@ -1,6 +1,6 @@
 import ErrorPage from '../ErrorPage';
 import { type RouteObject } from 'react-router-dom';
-import ListUrls from './ListUrls';
+import { ListUrls } from './components';
 
 const router: RouteObject[] = [
   {

@@ -2,7 +2,7 @@ import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
 import { useState } from 'react';
 import { classNames } from 'primereact/utils';
-import { type Url } from './types';
+import { type Url } from '../types';
 import { Button } from 'primereact/button';
 
 interface EditUrlDialogParams {

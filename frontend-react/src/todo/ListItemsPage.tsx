@@ -1,21 +1,11 @@
-import { useAuth0 } from '@auth0/auth0-react';
 import { useQuery } from 'react-query';
 import { Message } from 'primereact/message';
 import todoRepo from './todoItemsRepo';
 import { Link } from 'react-router-dom';
-import config from '../config';
+import useToken from '~/auth/useToken';
 
 function ListItemsPage() {
-  const { getAccessTokenSilently } = useAuth0();
-
-  async function getToken() {
-    return await getAccessTokenSilently({
-      authorizationParams: {
-        audience: `https://${config.auth0.domain}/api/v2/`,
-        scope: 'read:current_user',
-      },
-    });
-  }
+  const { getToken } = useToken();
 
   const { isError, error, data } = useQuery('todoItems', async () => {
     const authToken = await getToken();

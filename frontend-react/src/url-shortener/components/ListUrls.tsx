@@ -1,74 +1,43 @@
 import { DataTable, type DataTableRowEditCompleteEvent } from 'primereact/datatable';
 import { Message } from 'primereact/message';
 import { Button } from 'primereact/button';
-import { useAuth0 } from '@auth0/auth0-react';
-import config from '../config';
 import { Column } from 'primereact/column';
 import { InputText } from 'primereact/inputtext';
 import { Tag } from 'primereact/tag';
 import { type ReactNode, useEffect, useState, useCallback } from 'react';
-import { type Url } from './types';
+import { type Url } from '../types';
 import DeleteDialog from './DeleteDialog';
 import EditUrlDialog from './EditUrlDialog';
 import { Link } from 'react-router-dom';
-
-const baseUrl = `${config.backendAPI}/api/url-shortener/urls`;
+import useUrlHook from '../useUrlHook';
+import { ProgressSpinner } from 'primereact/progressspinner';
 
 // TODO select fields
 // TODO add other fields (e.g. usage count, last usage, create date, update date)
 function ListUrls() {
-  const { getAccessTokenSilently } = useAuth0();
+  const { listUrls, saveUrl, deleteUrl } = useUrlHook();
+  const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
   const [editDialog, setEditDialog] = useState(false);
   const [deleteDialog, setDeleteDialog] = useState(false);
   const [url, setUrl] = useState<Url | null>(null);
   const [urls, setUrls] = useState<Url[]>([]);
 
-  const getToken = useCallback(async (): Promise<string> => {
-    return await getAccessTokenSilently({
-      authorizationParams: {
-        audience: `https://${config.auth0.domain}/api/v2/`,
-        scope: 'read:current_user',
-      },
-    });
-  }, [getAccessTokenSilently]);
-
   const loadRows = useCallback(async (): Promise<void> => {
     try {
-      const authToken = await getToken();
-      const response = await fetch(baseUrl, {
-        headers: {
-          authorization: `Bearer ${authToken}`,
-        },
-      });
-      const rows = await response.json();
+      const rows = await listUrls();
       setUrls(rows);
     } catch (error) {
       console.error(error);
       setError(error as Error);
+    } finally {
+      setIsLoading(false);
     }
-  }, [getToken]);
+  }, [listUrls]);
 
   useEffect(() => {
     loadRows();
   }, [loadRows]);
-
-  /**
-   * Call API, persist url
-   */
-  const saveUrl = async (url: Url): Promise<Url> => {
-    const authToken = await getToken();
-    const response = await fetch(`${baseUrl}/${url.id || ''}`, {
-      method: url.id ? 'POST' : 'PUT',
-      body: JSON.stringify(url),
-      headers: {
-        'Content-Type': 'application/json',
-        authorization: `Bearer ${authToken}`,
-      },
-    });
-
-    return await response.json();
-  };
 
   const onRowEditComplete = async (e: DataTableRowEditCompleteEvent) => {
     const { newData, index } = e;
@@ -146,16 +115,9 @@ function ListUrls() {
    * Effective delete the url
    */
   const deleteHandler = async () => {
-    const authToken = await getToken();
     if (url?.id) {
       // only delete if it was persisted
-      await fetch(`${baseUrl}/${url?.id}`, {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-          authorization: `Bearer ${authToken}`,
-        },
-      });
+      await deleteUrl(url.id);
     }
     setUrls((old) => old.filter((c) => c.id !== url?.id));
     setDeleteDialog(false);
@@ -174,8 +136,9 @@ function ListUrls() {
 
   return (
     <>
+      {isLoading && <ProgressSpinner />}
       {error && <Message severity="error" text="There was an error loading data" />}
-      {!error && (
+      {!error && !isLoading && (
         <>
           <Button label="New" icon="pi pi-plus" className="p-button-success mr-2" onClick={addNewHandler} />
           {urls && (
