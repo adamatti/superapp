@@ -17,8 +17,3 @@ Merge my pet projects to a single repo with modules and optimize prod resources.
 # Done
 
 - deployed to fly.io
-
-# References / Tools
-
-- https://www.npmjs.com/package/tsc-watch
-- https://github.com/antfu/ni
