@@ -15,6 +15,11 @@ install: ## install dependencies
 run: ## run app as dev
 	@yarn --silent dev
 
+run-dev: run ## run app as dev
+
+run-html: build ## run as prod
+	serve dist/ -l $(PORT)
+
 build: clean ## build app (prod)
 	@yarn --silent build
 # copy to backend project
@@ -48,7 +53,3 @@ docker-run: docker-build ## run docker image
 	docker run -it --rm \
 		-p 8080:8080 \
 		$(DOCKER_TAG)
-
-run-html: build ## run as prod
-	serve dist/ -l $(PORT)
-

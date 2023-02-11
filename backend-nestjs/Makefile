@@ -50,6 +50,8 @@ run-prod: build ## run as prod
 run-watch: ## run as dev (with watch)
 	@tsc-watch --onSuccess "node ./dist/main.js"
 
+run-dev: run-watch ## run as dev
+
 pscale-connect: ## Create a local map (to do prisma migrations)
 	 pscale connect $(PLANET_SCALE_DB) $(PLANET_SCALE_BRANCH) --port 3309
 
