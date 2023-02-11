@@ -10,6 +10,7 @@ import { type ReactNode, useEffect, useState, useCallback } from 'react';
 import { type Url } from './types';
 import DeleteDialog from './DeleteDialog';
 import EditUrlDialog from './EditUrlDialog';
+import { Link } from 'react-router-dom';
 
 const baseUrl = `${config.backendAPI}/api/url-shortener/urls`;
 
@@ -81,6 +82,12 @@ function ListUrls() {
     return (
       <InputText type="text" value={options.value || ''} onChange={(e) => options.editorCallback(e.target.value)} />
     );
+  };
+
+  const urlTemplate = (e: Url) => {
+    const size = 30;
+    const value = e.url.length > size ? `${e.url.substring(0, size)}...` : e.url;
+    return <Link to={e.url}>{value}</Link>;
   };
 
   const keysTemplate = (e: Url) => {
@@ -183,20 +190,13 @@ function ListUrls() {
               // sortMode="multiple"
               sortField="url"
             >
-              <Column
-                field="title"
-                header="Title"
-                filter
-                sortable
-                editor={(options) => textEditor(options)}
-                style={{ width: '20%' }}
-              />
+              <Column field="title" header="Title" filter sortable editor={textEditor} style={{ width: '20%' }} />
               <Column
                 field="description"
                 header="Description"
                 filter
                 sortable
-                editor={(options) => textEditor(options)}
+                editor={textEditor}
                 style={{ width: '20%' }}
               />
               <Column
@@ -204,16 +204,11 @@ function ListUrls() {
                 header="Url"
                 filter
                 sortable
+                body={urlTemplate}
                 editor={(options) => textEditor(options)}
                 style={{ width: '20%' }}
               />
-              <Column
-                field="keys"
-                header="Keys"
-                body={(options) => keysTemplate(options)}
-                editor={(options) => keysEditor(options)}
-                style={{ width: '20%' }}
-              />
+              <Column field="keys" header="Keys" body={keysTemplate} editor={keysEditor} style={{ width: '20%' }} />
               <Column rowEditor headerStyle={{ width: '10%', minWidth: '8rem' }} bodyStyle={{ textAlign: 'center' }} />
               <Column body={deleteBodyTemplate} exportable={false} style={{ minWidth: '8rem' }}></Column>
             </DataTable>
