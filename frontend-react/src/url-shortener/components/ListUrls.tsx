@@ -63,7 +63,7 @@ function ListUrls() {
     return (
       <>
         {e.keys?.map((k: string) => (
-          <Tag key={k} value={k} />
+          <Tag key={k} value={k} rounded />
         ))}
       </>
     );

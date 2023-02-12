@@ -1,15 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { QueryClient, QueryClientProvider } from 'react-query';
-import { RouterProvider } from 'react-router-dom';
-import router from './router';
+import RouterProvider from './RouteProvider';
 import { Auth0Provider } from '@auth0/auth0-react';
 import config from './config';
 
-import 'primereact/resources/themes/saga-blue/theme.css';
-import 'primereact/resources/primereact.min.css';
-import 'primeicons/primeicons.css';
-import 'primeflex/primeflex.css';
+import './styles/main.scss';
+import { Layout } from './layout';
 
 const queryClient = new QueryClient();
 
@@ -25,7 +22,7 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
           scope: 'read:current_user update:current_user_metadata',
         }}
       >
-        <RouterProvider router={router} />
+        <RouterProvider layout={Layout} />
       </Auth0Provider>
     </QueryClientProvider>
   </React.StrictMode>,

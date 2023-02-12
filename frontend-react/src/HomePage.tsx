@@ -1,14 +1,16 @@
 import { Link } from 'react-router-dom';
 import { useAuth0 } from '@auth0/auth0-react';
 import LoginButton from './auth/LoginButton';
+import { ProgressSpinner } from 'primereact/progressspinner';
 
 // TODO break it in small components
 function HomePage() {
-  const { isAuthenticated } = useAuth0();
+  const { isAuthenticated, isLoading } = useAuth0();
 
   return (
     <>
-      {isAuthenticated && (
+      {isLoading && <ProgressSpinner />}
+      {!isLoading && isAuthenticated && (
         <div>
           Hello world. Current projects:
           <ul>
@@ -21,7 +23,7 @@ function HomePage() {
           </ul>
         </div>
       )}
-      {!isAuthenticated && (
+      {!isLoading && !isAuthenticated && (
         <div>
           Not authenticated
           <br />

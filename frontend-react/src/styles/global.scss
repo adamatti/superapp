@@ -1,0 +1,12 @@
+$linkColor: #2196F3;
+$titleBackgroundColor: white;
+
+a {
+  color: $linkColor;
+  &:visited {
+    color:$linkColor;
+  }
+  &:hover {
+    color: $linkColor;
+  }
+}

@@ -1,0 +1,33 @@
+@import './primereact';
+@import './sakai/index.scss';
+@import './global.scss';
+
+$titleBackgroundColor: white;
+
+.layout-topbar-title {
+  .layout-topbar-title-link {
+    text-decoration: none; // e.g. underline
+    text-transform: capitalize;
+    font-weight: bold;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    
+    color: $linkColor;
+    background-color: $titleBackgroundColor;
+    &:visited {
+      background: $titleBackgroundColor;
+    }
+    &:hover {
+      background: $titleBackgroundColor;
+    }
+  }
+}
+
+.p-sidebar-left {
+  width: 100px;
+}
+
+.layout-footer {
+  a {
+    color: black
+  }
+}
