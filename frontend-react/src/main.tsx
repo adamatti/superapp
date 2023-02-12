@@ -2,8 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import RouterProvider from './RouteProvider';
-import { Auth0Provider } from '@auth0/auth0-react';
-import config from './config';
+import { AuthProvider } from './auth';
 
 import './styles/main.scss';
 import { Layout } from './layout';
@@ -13,17 +12,9 @@ const queryClient = new QueryClient();
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
     <QueryClientProvider client={queryClient}>
-      <Auth0Provider
-        domain={config.auth0.domain}
-        clientId={config.auth0.clientId}
-        authorizationParams={{
-          redirect_uri: window.location.origin,
-          audience: `https://${config.auth0.domain}/api/v2/`,
-          scope: 'read:current_user update:current_user_metadata',
-        }}
-      >
+      <AuthProvider>
         <RouterProvider layout={Layout} />
-      </Auth0Provider>
+      </AuthProvider>
     </QueryClientProvider>
   </React.StrictMode>,
 );

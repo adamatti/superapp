@@ -3,6 +3,7 @@ import { AppModule } from './app.module';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { GlobalGuard } from './auth';
+import { ConfigService } from '@nestjs/config';
 
 const createSwagger = (app: INestApplication) => {
   const config = new DocumentBuilder()
@@ -24,7 +25,8 @@ async function bootstrap() {
   app.useGlobalGuards(guard);
 
   createSwagger(app);
-  // FIXME get it from a config
-  await app.listen(process.env.PORT || 3000, '0.0.0.0');
+
+  const configService = await app.resolve(ConfigService);
+  await app.listen(configService.get<number>('web.port'), '0.0.0.0');
 }
 bootstrap();
