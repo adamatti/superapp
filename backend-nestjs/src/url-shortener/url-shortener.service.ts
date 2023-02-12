@@ -2,7 +2,7 @@ import { Inject } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { PrismaService } from '../core';
 import { Entity } from './types';
-import { UrlDto } from './url.dto';
+import { UrlDto } from './dto/url.dto';
 
 export class UrlShortenerService {
   constructor(

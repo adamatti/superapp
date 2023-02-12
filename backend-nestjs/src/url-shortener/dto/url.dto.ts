@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Prisma } from '@prisma/client';
-import { Entity } from './types';
+import { Entity } from '../types';
 
 export class UrlDto {
   @ApiProperty()

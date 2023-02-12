@@ -1,9 +1,9 @@
 import { Body, Controller, Delete, Get, HttpStatus, Inject, Param, Post, Put, Res } from '@nestjs/common';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
 import { IsPublic } from '../auth';
 import { UrlShortenerService } from './url-shortener.service';
-import { UrlDto } from './url.dto';
+import { UrlDto } from './dto';
 
 @ApiTags('URL Shortener')
 @Controller('/url-shortener')
@@ -15,6 +15,8 @@ export class UrlShortenerController {
 
   @Get('/go/:key')
   @IsPublic()
+  @ApiResponse({ status: 200, description: 'Redirect to the valid URL' })
+  @ApiResponse({ status: 400, description: 'Key not found' })
   async go(@Param('key') key: string, @Res() res: Response): Promise<void> {
     const entry = await this.service.findByKey(key);
 
@@ -35,6 +37,7 @@ export class UrlShortenerController {
   }
 
   @Get('/urls')
+  @ApiBearerAuth()
   @ApiResponse({ type: UrlDto, isArray: true })
   async list(): Promise<UrlDto[]> {
     const urls = await this.service.list();
@@ -42,22 +45,28 @@ export class UrlShortenerController {
   }
 
   @Put('/urls')
+  @ApiBearerAuth()
+  @ApiBody({ type: UrlDto })
   @ApiOperation({ description: 'Creates an url' })
-  async create(@Body() dto: UrlDto) {
+  @ApiResponse({ type: UrlDto, isArray: false })
+  async create(@Body() dto: UrlDto): Promise<UrlDto> {
     const entity = await this.service.create(dto.toCreate());
     return UrlDto.fromEntity(entity);
   }
 
   @Delete('/urls/:id')
+  @ApiBearerAuth()
   @ApiOperation({ description: 'Delete an url' })
   @ApiResponse({ status: HttpStatus.ACCEPTED })
-  async delete(@Param('id') id: number, @Res() res: Response) {
+  async delete(@Param('id') id: number, @Res() res: Response): Promise<void> {
     await this.service.delete(id);
     res.send(HttpStatus.ACCEPTED).end();
   }
 
   @Post('/urls/:id')
-  @ApiResponse({ description: 'Update an url', type: UrlDto, isArray: false })
+  @ApiBearerAuth()
+  @ApiBody({ type: UrlDto, isArray: false })
+  @ApiResponse({ status: 200, description: 'Update an url', type: UrlDto, isArray: false })
   async update(@Param('id') id: number, @Body() dto: UrlDto): Promise<UrlDto> {
     dto.id = id;
     const entity = await this.service.upsert(dto);

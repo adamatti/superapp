@@ -1,8 +1,9 @@
 import { Body, Controller, Delete, Get, HttpStatus, Inject, Param, Patch, Post, Res } from '@nestjs/common';
-import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { PrismaService } from '../core';
 import { Response } from 'express';
-import { Prisma, TodoItem } from '@prisma/client';
+import { Prisma, TodoItem as PrismaTodoItem } from '@prisma/client';
+import { TodoItem } from './dto';
 
 @ApiTags('Todo')
 @Controller('/todo/item')
@@ -13,22 +14,27 @@ export class TodoController {
   ) {}
 
   @Get()
-  @ApiResponse({})
-  list() {
-    return this.prisma.todoItem.findMany({});
+  @ApiResponse({ status: 200, type: TodoItem, isArray: true })
+  @ApiBearerAuth()
+  async list(): Promise<TodoItem[]> {
+    const entities: PrismaTodoItem[] = await this.prisma.todoItem.findMany({});
+    return entities.map(TodoItem.fromPrisma);
   }
 
   @Get('/:id')
+  @ApiBearerAuth()
+  @ApiResponse({ status: 200, description: 'Find a record', type: TodoItem, isArray: false })
   async getOne(@Param('id') id: number, @Res({ passthrough: true }) res: Response) {
     const entry = await this.prisma.todoItem.findFirst({ where: { id } });
     if (!entry) {
       res.status(HttpStatus.NOT_FOUND).end();
     } else {
-      return entry;
+      return TodoItem.fromPrisma(entry);
     }
   }
 
   @Post()
+  @ApiBearerAuth()
   @ApiBody({})
   @ApiResponse({ status: HttpStatus.CREATED })
   async create(@Body() dto: Prisma.TodoItemCreateInput, @Res() res: Response): Promise<void> {
@@ -37,6 +43,7 @@ export class TodoController {
   }
 
   @Delete('/:id')
+  @ApiBearerAuth()
   async delete(@Param('id') id: number, @Res() res: Response): Promise<void> {
     const entry = await this.prisma.todoItem.findFirst({ where: { id } });
     if (!entry) {
@@ -48,6 +55,9 @@ export class TodoController {
   }
 
   @Patch('/:id')
+  @ApiBearerAuth()
+  @ApiResponse({ status: 400, description: 'Row not found' })
+  @ApiResponse({ status: 200, type: TodoItem, isArray: false, description: 'Update accepted' })
   async update(
     @Param('id') id: number,
     @Body() dto: Prisma.TodoItemUpdateInput,
@@ -59,6 +69,6 @@ export class TodoController {
       return null;
     }
     entry = await this.prisma.todoItem.update({ data: dto, where: { id } });
-    return entry;
+    return TodoItem.fromPrisma(entry);
   }
 }
