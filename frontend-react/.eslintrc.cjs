@@ -37,6 +37,7 @@ module.exports = {
     '@typescript-eslint/no-floating-promises': 'off',
     '@typescript-eslint/triple-slash-reference': 'off',
     '@typescript-eslint/no-empty-function': 'off',
+    '@typescript-eslint/no-extraneous-class': 'off',
 
     '@typescript-eslint/no-unused-vars': 'warn',    
   },

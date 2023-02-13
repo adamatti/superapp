@@ -1,6 +1,7 @@
 import React from 'react';
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/auth';
+import AuthLocalStorage from './AuthLocalStorage';
 
 export const initialState = {
   isAuthenticated: false,
@@ -12,8 +13,7 @@ export const initialState = {
   getToken: () => '',
 
   logout: async () => {
-    localStorage.removeItem('authenticated');
-    localStorage.removeItem('token');
+    AuthLocalStorage.clean();
     await firebase.auth().signOut();
     window.location.href = '/';
   },

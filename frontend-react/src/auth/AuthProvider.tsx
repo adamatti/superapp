@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { AuthContext, initialState } from './AuthContext';
 import firebase from 'firebase/compat/app';
-
+import AuthLocalStorage from './AuthLocalStorage';
 import config from '~/config';
 
 firebase.initializeApp(config.firebase);
@@ -11,20 +11,21 @@ interface AuthProviderOptions {
 }
 
 function AuthProvider(options: AuthProviderOptions) {
+  const { token: localToken, authenticated: localAuthenticated } = AuthLocalStorage.load();
   const [user, setUser] = useState<any>({});
-  const [token, setToken] = useState(localStorage.getItem('token'));
-  const [isAuthenticated, setIsAuthenticaded] = useState(localStorage.getItem('authenticated') === 'true');
+  const [token, setToken] = useState(localToken);
+  const [isAuthenticated, setIsAuthenticaded] = useState(localAuthenticated);
 
   useEffect(() => {
     const unregisterAuthObserver = firebase.auth().onAuthStateChanged(async (user) => {
+      let token: string | null = null;
       if (user) {
-        const token = await user?.getIdToken();
+        token = await user?.getIdToken();
         if (token) {
-          localStorage.setItem('token', token);
           setToken(token);
         }
       }
-      localStorage.setItem('authenticated', `${user ? 'true' : 'false'}`);
+      AuthLocalStorage.store(token, !!user);
       setIsAuthenticaded(!!user);
       setUser(user);
     });
