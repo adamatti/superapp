@@ -14,3 +14,5 @@ fly.toml
 Makefile
 
 *.md
+*.template
+*.local

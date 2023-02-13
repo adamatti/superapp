@@ -23,6 +23,10 @@ export class WebConfig {
   @IsNumber()
   port: number;
 
+  @IsString()
+  @IsNotEmpty()
+  domain: string;
+
   static build(args: Partial<WebConfig>) {
     const config = Object.assign(new WebConfig(), args);
     return validateOrThrow(config);
@@ -49,6 +53,10 @@ export class AuthConfig {
 }
 
 class Config {
+  @IsString()
+  @IsNotEmpty()
+  appEnv: string;
+
   @IsObject()
   web: WebConfig;
 
@@ -60,16 +68,18 @@ class Config {
 
   static buildFromEnv(): Config {
     return Config.build({
+      appEnv: `${process.env.APP_ENV || 'dev'}`,
       web: WebConfig.build({
         port: Number(process.env.PORT || 3000),
+        domain: `${process.env.DOMAIN || ''}`,
       }),
       auth: AuthConfig.build({
         jwksUri: `${process.env.AUTH0_ISSUER_URL}.well-known/jwks.json`,
-        audience: `${process.env.AUTH0_AUDIENCE}`,
-        issuer: `${process.env.AUTH0_ISSUER_URL}`,
+        audience: `${process.env.AUTH0_AUDIENCE || ''}`,
+        issuer: `${process.env.AUTH0_ISSUER_URL || ''}`,
       }),
       database: DatabaseConfig.build({
-        url: `${process.env.DATABASE_URL}`,
+        url: `${process.env.DATABASE_URL || ''}`,
       }),
     });
   }

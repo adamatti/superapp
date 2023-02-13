@@ -1,33 +1,29 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { Strategy, ExtractJwt } from 'passport-firebase-jwt';
-import * as firebaseConfig from '../firebase/firebase.config.json';
+
 import * as firebase from 'firebase-admin';
 import { PassportStrategy } from '@nestjs/passport';
-
-const firebase_params = {
-  type: firebaseConfig.type,
-  projectId: firebaseConfig.project_id,
-  privateKeyId: firebaseConfig.private_key_id,
-  privateKey: firebaseConfig.private_key,
-  clientEmail: firebaseConfig.client_email,
-  clientId: firebaseConfig.client_id,
-  authUri: firebaseConfig.auth_uri,
-  tokenUri: firebaseConfig.token_uri,
-  authProviderX509CertUrl: firebaseConfig.auth_provider_x509_cert_url,
-  clientC509CertUrl: firebaseConfig.client_x509_cert_url,
-};
+import firebase_params from './firebase.config';
+import { ACCESS_TOKEN } from './constants';
+import { Request } from 'express';
 
 @Injectable()
 export class FirebaseAuthStrategy extends PassportStrategy(Strategy, 'firebase-auth') {
   private defaultApp: any;
   constructor() {
     super({
-      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+      jwtFromRequest: ExtractJwt.fromExtractors([
+        FirebaseAuthStrategy.extractJWTFromCookie,
+        ExtractJwt.fromAuthHeaderAsBearerToken(),
+      ]),
+      secretOrKey: 'batata',
     });
+
     this.defaultApp = firebase.initializeApp({
       credential: firebase.credential.cert(firebase_params),
     });
   }
+
   async validate(token: string) {
     const firebaseUser: any = await this.defaultApp
       .auth()
@@ -40,5 +36,9 @@ export class FirebaseAuthStrategy extends PassportStrategy(Strategy, 'firebase-a
       throw new UnauthorizedException();
     }
     return firebaseUser;
+  }
+
+  private static extractJWTFromCookie(req: Request): string | null {
+    return (req.cookies && req.cookies[ACCESS_TOKEN]) || null;
   }
 }
