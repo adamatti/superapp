@@ -12,8 +12,8 @@
     "lint:fix": "eslint \"src/**/*.tsx\" \"src/**/*.ts\" --fix"
   },
   "dependencies": {
-    "@auth0/auth0-react": "^2.0.0",
     "eslint-plugin-import-sort": "^0.0.0",
+    "firebase": "^9.17.1",
     "localforage": "^1.10.0",
     "match-sorter": "^6.3.1",
     "primeflex": "^3.3.0",
@@ -21,11 +21,13 @@
     "primereact": "^9.0.0-beta.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-firebaseui": "^6.0.0",
     "react-query": "^3.39.3",
     "react-router-dom": "^6.8.1",
     "sort-by": "^1.2.0"
   },
   "devDependencies": {
+    "@types/firebase": "^3.2.1",
     "@types/jest": "^29.4.0",
     "@types/node": "^18.11.19",
     "@types/react": "^18.0.27",

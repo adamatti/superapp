@@ -1,10 +1,15 @@
 import { type RouteObject } from 'react-router-dom';
+import { IsAuthenticated } from '~/auth';
 import { ListUrls } from './components';
 
 const router: RouteObject[] = [
   {
     path: '/urls',
-    element: <ListUrls />,
+    element: (
+      <IsAuthenticated>
+        <ListUrls />
+      </IsAuthenticated>
+    ),
   },
 ];
 

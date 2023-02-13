@@ -2,13 +2,13 @@ import { useQuery } from 'react-query';
 import { Message } from 'primereact/message';
 import todoRepo from './todoItemsRepo';
 import { Link } from 'react-router-dom';
-import useToken from '~/auth/useToken';
+import useToken from '~/auth/useAuth';
 
 function ListItemsPage() {
   const { getToken } = useToken();
 
   const { isError, error, data } = useQuery('todoItems', async () => {
-    const authToken = await getToken();
+    const authToken = getToken();
     return await todoRepo.list(authToken);
   });
 
