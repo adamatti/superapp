@@ -4,9 +4,9 @@
 
 const config = {
   backendAPI: import.meta.env.VITE_BACKEND_API,
-  auth0: {
-    domain: import.meta.env.VITE_AUTH0_DOMAIN,
-    clientId: import.meta.env.VITE_AUTH0_CLIENT_ID,
+  firebase: {
+    apiKey: import.meta.env.VITE_FIREBASE_API_KEY ?? 'AIzaSyCipbfpFveJrDvoEfqcnuUEn4EiHee4L6o',
+    authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN ?? 'adamatti.firebaseapp.com',
   },
 };
 

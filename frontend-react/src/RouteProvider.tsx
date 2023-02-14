@@ -1,9 +1,9 @@
 import { createBrowserRouter, RouterProvider, type RouteObject } from 'react-router-dom';
 
-import HomePage from './HomePage';
 import ErrorPage from './ErrorPage';
 import { routes as todoRoutes } from './todo';
 import { routes as urlRoutes } from './url-shortener';
+import { SignInScreen } from './auth';
 
 interface HasChildren {
   children: React.ReactNode | null;
@@ -27,7 +27,7 @@ function ThisRouteProvider(options: RouteProviderOptions): JSX.Element {
   const routes: RouteObject[] = [
     {
       path: '/',
-      element: <HomePage />,
+      element: <SignInScreen />,
     },
     ...todoRoutes,
     ...urlRoutes,

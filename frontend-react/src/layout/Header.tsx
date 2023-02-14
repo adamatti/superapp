@@ -1,12 +1,12 @@
 import { Button } from 'primereact/button';
-import { useAuth0 } from '@auth0/auth0-react';
+import { useAuth } from '~/auth';
 
 interface HeaderOptions {
   sidebarAction: (func: (old: boolean) => boolean) => void;
 }
 
 function Header(options: HeaderOptions): JSX.Element {
-  const { isAuthenticated } = useAuth0();
+  const { isAuthenticated } = useAuth();
 
   return (
     <div className="layout-topbar">

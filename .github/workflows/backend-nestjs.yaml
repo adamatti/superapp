@@ -19,11 +19,18 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 19.6
+
       - name: Install dependencies
         run: yarn --frozen-lockfile
+
       - name: Lint check
         run: yarn --silent lint
+
       - name: Unit tests
         run: yarn --silent test
+
+      - name: Copy empty firebase config
+        run:  cp ./firebase.config.json.template ./src/auth/firebase/firebase.config.json
+
       - name: Build
         run: yarn --silent build

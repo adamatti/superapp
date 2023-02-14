@@ -1,14 +1,13 @@
-import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
-import { Reflector } from '@nestjs/core';
-import { IS_PUBLIC_KEY } from './is-public.decorator';
+import { ExecutionContext, Injectable } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
+import { Reflector } from '@nestjs/core';
+import { IS_PUBLIC_KEY } from '../is-public.decorator';
 
 @Injectable()
-export class GlobalGuard extends AuthGuard('jwt') implements CanActivate {
-  constructor(private readonly reflector: Reflector) {
+export class FirebaseAuthGuard extends AuthGuard('firebase-auth') {
+  constructor(private reflector: Reflector) {
     super();
   }
-
   canActivate(context: ExecutionContext) {
     const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [
       context.getHandler(),
@@ -18,7 +17,6 @@ export class GlobalGuard extends AuthGuard('jwt') implements CanActivate {
     if (isPublic) {
       return true;
     }
-
     return super.canActivate(context);
   }
 }

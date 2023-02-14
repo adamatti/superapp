@@ -1,6 +1,7 @@
-import TodoHomePage from './HomePage';
 import ShowItemPage from './ShowItemPage';
 import { Navigate, type RouteObject } from 'react-router-dom';
+import { IsAuthenticated } from '~/auth';
+import ListItemsPage from './ListItemsPage';
 
 const router: RouteObject[] = [
   {
@@ -9,11 +10,19 @@ const router: RouteObject[] = [
   },
   {
     path: '/todo/items',
-    element: <TodoHomePage />,
+    element: (
+      <IsAuthenticated>
+        <ListItemsPage />
+      </IsAuthenticated>
+    ),
   },
   {
     path: '/todo/items/:id',
-    element: <ShowItemPage />,
+    element: (
+      <IsAuthenticated>
+        <ShowItemPage />
+      </IsAuthenticated>
+    ),
   },
 ];
 

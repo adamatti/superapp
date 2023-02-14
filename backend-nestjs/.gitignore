@@ -2,3 +2,7 @@
 dist/
 node_modules/
 
+firebase.config.json
+
+*.local
+*.log

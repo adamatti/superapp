@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react';
-import useToken from '~/auth/useToken';
+import useToken from '~/auth/useAuth';
 import config from '~/config';
 import { type Url } from './types';
 
@@ -10,7 +10,7 @@ function useUrlHook() {
 
   return {
     listUrls: useCallback(async (): Promise<Url[]> => {
-      const authToken = await getToken();
+      const authToken = getToken();
       const response = await fetch(baseUrl, {
         headers: {
           authorization: `Bearer ${authToken}`,
@@ -21,7 +21,7 @@ function useUrlHook() {
 
     saveUrl: useCallback(
       async (url: Url): Promise<Url> => {
-        const authToken = await getToken();
+        const authToken = getToken();
         const response = await fetch(`${baseUrl}/${url.id || ''}`, {
           method: url.id ? 'POST' : 'PUT',
           body: JSON.stringify(url),
@@ -38,7 +38,7 @@ function useUrlHook() {
 
     deleteUrl: useCallback(
       async (id: number): Promise<void> => {
-        const authToken = await getToken();
+        const authToken = getToken();
 
         await fetch(`${baseUrl}/${id}`, {
           method: 'DELETE',
