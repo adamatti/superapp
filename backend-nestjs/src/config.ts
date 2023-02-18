@@ -27,6 +27,10 @@ export class WebConfig {
   @IsNotEmpty()
   domain: string;
 
+  @IsString()
+  @IsNotEmpty()
+  cookieSecret: string;
+
   static build(args: Partial<WebConfig>) {
     const config = Object.assign(new WebConfig(), args);
     return validateOrThrow(config);
@@ -72,6 +76,7 @@ class Config {
       web: WebConfig.build({
         port: Number(process.env.PORT || 3000),
         domain: `${process.env.DOMAIN || ''}`,
+        cookieSecret: `${process.env.COOKIE_SECRET || 'potato'}`,
       }),
       auth: AuthConfig.build({
         jwksUri: `${process.env.AUTH0_ISSUER_URL}.well-known/jwks.json`,

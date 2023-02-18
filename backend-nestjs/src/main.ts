@@ -18,7 +18,6 @@ const createSwagger = (app: INestApplication) => {
 
 async function bootstrap() {
   const app: INestApplication = await NestFactory.create(AppModule);
-  app.use(cookieParser('batata'));
   app.setGlobalPrefix('api', { exclude: ['healthcheck'] });
   app.enableCors();
   app.useGlobalPipes(new ValidationPipe({ transform: true }));
@@ -29,6 +28,7 @@ async function bootstrap() {
   createSwagger(app);
 
   const configService = await app.resolve(ConfigService);
+  app.use(cookieParser(configService.get<string>('web.cookieSecret')));
   await app.listen(configService.get<number>('web.port'), '0.0.0.0');
 }
 bootstrap();

@@ -1,11 +1,16 @@
-import FirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
+import { StyledFirebaseAuth as FirebaseAuth } from 'react-firebaseui';
 // import { FirebaseAuth } from 'react-firebaseui';
 import firebase from 'firebase/compat/app';
+const { auth } = firebase;
 
 function LoginPage(): JSX.Element {
   const uiConfig = {
     signInFlow: 'popup',
-    signInOptions: [firebase.auth.GoogleAuthProvider.PROVIDER_ID, firebase.auth.FacebookAuthProvider.PROVIDER_ID],
+    signInOptions: [
+      auth.GoogleAuthProvider.PROVIDER_ID,
+      auth.FacebookAuthProvider.PROVIDER_ID,
+      auth.GithubAuthProvider.PROVIDER_ID,
+    ],
     callbacks: {
       // Avoid redirects after sign-in.
       signInSuccessWithAuthResult: () => false,
@@ -16,7 +21,7 @@ function LoginPage(): JSX.Element {
     <div>
       <h1>My App</h1>
       <p>Please sign-in:</p>
-      <FirebaseAuth uiConfig={uiConfig} firebaseAuth={firebase.auth()} />
+      <FirebaseAuth uiConfig={uiConfig} firebaseAuth={auth()} />
     </div>
   );
 }
