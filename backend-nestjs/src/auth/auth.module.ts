@@ -3,6 +3,7 @@ import { Module } from '@nestjs/common';
 import { PassportModule } from '@nestjs/passport';
 import { JwtStrategy, JwtGuard } from './auth0';
 import { FirebaseAuthGuard, FirebaseAuthStrategy, FirebaseController, FirebaseService } from './firebase';
+import { UserService } from './user.service';
 
 const auth0Config: ModuleMetadata = {
   imports: [PassportModule.register({ defaultStrategy: 'jwt' })],
@@ -12,7 +13,7 @@ const auth0Config: ModuleMetadata = {
 
 const firebaseConfig: ModuleMetadata = {
   imports: [],
-  providers: [FirebaseAuthStrategy, FirebaseAuthGuard, FirebaseService],
+  providers: [FirebaseAuthStrategy, FirebaseAuthGuard, FirebaseService, UserService],
   controllers: [FirebaseController],
 };
 

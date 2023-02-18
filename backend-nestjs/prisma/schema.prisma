@@ -1,5 +1,6 @@
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["extendedWhereUnique"]
 }
 
 datasource db {
@@ -8,17 +9,62 @@ datasource db {
   relationMode = "prisma"
 }
 
+/////////////////////////////////////////////////////////////////////////////
+model AuthUser {
+  id    Int    @id @default(autoincrement())
+  email String @unique
+
+  identities   AuthIdentity[]
+  todoItems    TodoItem[]
+  urls         UrlShortenerUrl[]
+  urlKeys      UrlShortenerKey[]
+  applications AuthAplication[]
+
+  @@index(fields: [email], name: "auth_user_email")
+  @@map("auth_user")
+}
+
+model AuthIdentity {
+  id       Int    @id @default(autoincrement())
+  userId   Int    @map("user_id")
+  identity String @unique
+
+  user AuthUser @relation(fields: [userId], references: [id])
+
+  @@index(fields: [userId], name: "auth_identity_user_id")
+  @@index(fields: [identity], name: "auth_identity_identity")
+  @@map("auth_identity")
+}
+
+model AuthAplication {
+  id     Int    @id @default(autoincrement())
+  userId Int    @map("user_id")
+  key    String
+
+  user AuthUser @relation(fields: [userId], references: [id])
+
+  @@index(fields: [userId], name: "auth_aplication_user_id")
+  @@map("auth_application")
+}
+
+/////////////////////////////////////////////////////////////////////////////
 model TodoItem {
   id        Int      @id @default(autoincrement())
+  userId    Int      @map("user_id")
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
   name      String   @db.VarChar(255)
 
+  user AuthUser @relation(fields: [userId], references: [id])
+
+  @@index(fields: [userId], name: "todo_item_user_id")
   @@map("todo_item")
 }
 
+/////////////////////////////////////////////////////////////////////////////
 model UrlShortenerUrl {
   id          Int      @id @default(autoincrement())
+  userId      Int      @map("user_id")
   createdAt   DateTime @default(now()) @map("created_at")
   updatedAt   DateTime @updatedAt @map("updated_at")
   title       String?  @db.VarChar(255)
@@ -29,16 +75,23 @@ model UrlShortenerUrl {
   lastUsage  DateTime? @map("last_usage")
 
   keys UrlShortenerKey[]
+  user AuthUser          @relation(fields: [userId], references: [id])
 
+  @@unique(fields: [userId, url], name: "us_url")
+  @@index(fields: [userId], name: "us_url_user_id")
   @@map("us_url")
 }
 
 model UrlShortenerKey {
-  key   String @id @unique
-  urlId Int    @map("url_id")
+  userId Int    @map("user_id")
+  key    String @id
+  urlId  Int    @map("url_id")
 
-  url UrlShortenerUrl @relation(fields: [urlId], references: [id])
+  url  UrlShortenerUrl @relation(fields: [urlId], references: [id])
+  user AuthUser        @relation(fields: [userId], references: [id])
 
+  @@unique(fields: [userId, key], name: "us_key")
+  @@index(fields: [userId], name: "us_key_user_id")
   @@index(fields: [urlId], name: "us_key_url_id")
   @@map("us_key")
 }

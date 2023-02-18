@@ -57,13 +57,26 @@ export class AuthConfig {
 }
 
 export class LoggerConfig {
+  /**
+   * log level
+   */
   @IsString()
   @IsNotEmpty()
   level: string;
 
+  /**
+   * shall use colors on console log
+   */
   @IsBoolean()
   @IsNotEmpty()
   useColor: boolean;
+
+  /**
+   * Shall log sql
+   */
+  @IsBoolean()
+  @IsNotEmpty()
+  sql: boolean;
 
   static build(args: Partial<LoggerConfig>): LoggerConfig {
     const config = Object.assign(new LoggerConfig(), args);
@@ -106,6 +119,7 @@ class Config {
       }),
       logger: LoggerConfig.build({
         level: `${process.env.LOG_LEVEL || 'info'}`,
+        sql: process.env.LOG_SQL === 'true',
         useColor: process.env.LOG_USE_COLOR === 'true',
       }),
     });

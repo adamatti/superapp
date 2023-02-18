@@ -10,19 +10,43 @@ export class UrlShortenerService {
     private readonly prisma: PrismaService,
   ) {}
 
-  findByKey(key: string) {
-    return this.prisma.urlShortenerKey.findFirst({
-      where: { key },
-      include: {
-        url: true,
+  /**
+   * Find and update statistics
+   * @param applicationKey
+   * @param key
+   * @returns
+   */
+  async findUrlPathByKey(applicationKey: string, key: string): Promise<null | string> {
+    const urlEntity = await this.prisma.urlShortenerUrl.findFirst({
+      select: { id: true, url: true },
+      where: {
+        keys: {
+          some: { key },
+        },
+        user: {
+          applications: {
+            some: {
+              key: applicationKey,
+            },
+          },
+        },
       },
     });
+
+    if (urlEntity) {
+      await this.updateLastUsage(urlEntity.id);
+    }
+
+    return urlEntity.url;
   }
 
-  list(): Promise<Entity[]> {
+  list(userId: number): Promise<Entity[]> {
     return this.prisma.urlShortenerUrl.findMany({
       include: {
         keys: true,
+      },
+      where: {
+        userId,
       },
     });
   }
@@ -35,14 +59,14 @@ export class UrlShortenerService {
   }
 
   // FIXME use transaction
-  async delete(id: number): Promise<void> {
-    await this.prisma.urlShortenerKey.deleteMany({ where: { urlId: id } });
-    await this.prisma.urlShortenerUrl.delete({ where: { id } });
+  async delete(userId: number, id: number): Promise<void> {
+    await this.prisma.urlShortenerKey.deleteMany({ where: { urlId: id, userId } });
+    await this.prisma.urlShortenerUrl.delete({ where: { id, userId } });
   }
 
   // FIXME use transaction
   async upsert(dto: UrlDto): Promise<Entity> {
-    await this.prisma.urlShortenerKey.deleteMany({ where: { urlId: dto.id } });
+    await this.prisma.urlShortenerKey.deleteMany({ where: { urlId: dto.id, userId: dto.userId } });
 
     const fields = {
       title: dto.title,
@@ -50,14 +74,15 @@ export class UrlShortenerService {
       url: dto.url,
       keys: {
         createMany: {
-          data: dto.keys?.map((k) => ({ key: k })),
+          data: dto.keys?.map((k) => ({ userId: dto.userId, key: k })),
         },
       },
     };
 
-    return this.prisma.urlShortenerUrl.upsert({
+    const dbPromise = this.prisma.urlShortenerUrl.upsert({
       create: {
         id: dto.id,
+        userId: dto.userId,
         ...fields,
       },
       update: {
@@ -65,10 +90,23 @@ export class UrlShortenerService {
       },
       where: {
         id: dto.id,
+        userId: dto.userId,
       },
       include: {
         keys: true,
       },
+    });
+
+    return dbPromise;
+  }
+
+  private async updateLastUsage(urlId: number): Promise<void> {
+    await this.prisma.urlShortenerUrl.update({
+      data: {
+        lastUsage: new Date(),
+        usageCount: { increment: 1 },
+      },
+      where: { id: urlId },
     });
   }
 }

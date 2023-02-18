@@ -6,6 +6,8 @@ export class UrlDto {
   @ApiProperty()
   id?: number;
 
+  userId: number;
+
   @ApiProperty()
   title?: string;
 
@@ -30,11 +32,21 @@ export class UrlDto {
 
   toCreate(): Prisma.UrlShortenerUrlCreateInput {
     return {
+      user: {
+        connect: {
+          id: this.userId,
+        },
+      },
       title: this.title,
       description: this.description,
       url: this.url,
       keys: {
         create: this.keys.map((k) => ({
+          user: {
+            connect: {
+              id: this.userId,
+            },
+          },
           key: k,
         })),
       },
