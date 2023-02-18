@@ -1,4 +1,4 @@
-import { IsNumber, IsString, IsNotEmpty, IsObject, validateSync } from 'class-validator';
+import { IsNumber, IsString, IsNotEmpty, IsObject, validateSync, IsBoolean } from 'class-validator';
 
 function validateOrThrow<T extends object>(obj: T): T {
   const errors = validateSync(obj, { skipMissingProperties: false });
@@ -13,7 +13,7 @@ export class DatabaseConfig {
   @IsNotEmpty()
   url: string;
 
-  static build(args: Partial<DatabaseConfig>) {
+  static build(args: Partial<DatabaseConfig>): DatabaseConfig {
     const config = Object.assign(new DatabaseConfig(), args);
     return validateOrThrow(config);
   }
@@ -31,7 +31,7 @@ export class WebConfig {
   @IsNotEmpty()
   cookieSecret: string;
 
-  static build(args: Partial<WebConfig>) {
+  static build(args: Partial<WebConfig>): WebConfig {
     const config = Object.assign(new WebConfig(), args);
     return validateOrThrow(config);
   }
@@ -50,8 +50,23 @@ export class AuthConfig {
   @IsNotEmpty()
   issuer: string;
 
-  static build(args: Partial<AuthConfig>) {
+  static build(args: Partial<AuthConfig>): AuthConfig {
     const config = Object.assign(new AuthConfig(), args);
+    return validateOrThrow(config);
+  }
+}
+
+export class LoggerConfig {
+  @IsString()
+  @IsNotEmpty()
+  level: string;
+
+  @IsBoolean()
+  @IsNotEmpty()
+  useColor: boolean;
+
+  static build(args: Partial<LoggerConfig>): LoggerConfig {
+    const config = Object.assign(new LoggerConfig(), args);
     return validateOrThrow(config);
   }
 }
@@ -70,6 +85,9 @@ class Config {
   @IsObject()
   database: DatabaseConfig;
 
+  @IsObject()
+  logger: LoggerConfig;
+
   static buildFromEnv(): Config {
     return Config.build({
       appEnv: `${process.env.APP_ENV || 'dev'}`,
@@ -85,6 +103,10 @@ class Config {
       }),
       database: DatabaseConfig.build({
         url: `${process.env.DATABASE_URL || ''}`,
+      }),
+      logger: LoggerConfig.build({
+        level: `${process.env.LOG_LEVEL || 'info'}`,
+        useColor: process.env.LOG_USE_COLOR === 'true',
       }),
     });
   }
