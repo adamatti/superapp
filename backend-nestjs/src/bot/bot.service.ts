@@ -29,7 +29,9 @@ export class BotService {
     if (appEnv === 'dev') {
       this.bot.launch();
     } else {
-      this.bot.telegram.setWebhook(`https://${webConfig}/api/telegram`);
+      const url = `https://${webConfig.domain}/api/telegram`;
+      this.logger.debug(`Using telegram webhook: ${url}`);
+      this.bot.telegram.setWebhook(url);
       this.shutdownHooks();
     }
   }
