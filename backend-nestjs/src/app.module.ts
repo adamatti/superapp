@@ -7,6 +7,7 @@ import { join } from 'path';
 import { UrlShortenerModule } from './url-shortener';
 import { ConfigModule } from '@nestjs/config';
 import { load as loadConfig } from './config';
+import { BotModule } from './bot';
 
 const APP_ENV: string = process.env.APP_ENV || 'dev';
 
@@ -26,6 +27,7 @@ const APP_ENV: string = process.env.APP_ENV || 'dev';
     AuthModule,
     TodoModule,
     UrlShortenerModule,
+    BotModule,
   ],
   controllers: [],
   providers: [],

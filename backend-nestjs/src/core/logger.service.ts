@@ -1,3 +1,4 @@
+import { Scope } from '@nestjs/common';
 import { Injectable, LoggerService as NestLoggerService } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { LeveledLogMethod, createLogger, Logger, format, transports } from 'winston';
@@ -5,13 +6,13 @@ import { LoggerConfig } from '~/config';
 const { combine, timestamp, printf } = format;
 
 const Colors = {
-  debug: '\x1b[43m',
+  debug: '\x1b[42m',
   info: '\x1b[36m',
   warn: '\x1b[33m',
   error: '\x1b[31m',
 };
 
-@Injectable()
+@Injectable({ scope: Scope.TRANSIENT })
 export class LoggerService implements NestLoggerService {
   private readonly logger: Logger;
 

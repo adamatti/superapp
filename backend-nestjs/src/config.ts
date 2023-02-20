@@ -8,6 +8,17 @@ function validateOrThrow<T extends object>(obj: T): T {
   return obj;
 }
 
+export class TelegramConfig {
+  @IsString()
+  @IsNotEmpty()
+  token: string;
+
+  static build(args: Partial<TelegramConfig>): TelegramConfig {
+    const config = Object.assign(new TelegramConfig(), args);
+    return validateOrThrow(config);
+  }
+}
+
 export class DatabaseConfig {
   @IsString()
   @IsNotEmpty()
@@ -101,6 +112,9 @@ class Config {
   @IsObject()
   logger: LoggerConfig;
 
+  @IsObject()
+  telegram: TelegramConfig;
+
   static buildFromEnv(): Config {
     return Config.build({
       appEnv: `${process.env.APP_ENV || 'dev'}`,
@@ -121,6 +135,9 @@ class Config {
         level: `${process.env.LOG_LEVEL || 'info'}`,
         sql: process.env.LOG_SQL === 'true',
         useColor: process.env.LOG_USE_COLOR === 'true',
+      }),
+      telegram: TelegramConfig.build({
+        token: `${process.env.TELEGRAM_TOKEN || ''}`,
       }),
     });
   }
