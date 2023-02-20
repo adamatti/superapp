@@ -1,11 +1,5 @@
 Merge my pet projects to a single repo with modules and optimize prod resources.
-
-# Apps to build/merge
-
-- todoist like
-- url shorten
-- pet projects tracker
-- reader (rss, twitter)
+Please check the [wiki](https://github.com/adamatti/superapp/wiki) of the project.
 
 # Todo
 
@@ -13,7 +7,3 @@ Merge my pet projects to a single repo with modules and optimize prod resources.
   - nestjs
   - react
   - flyio
-
-# Done
-
-- deployed to fly.io
