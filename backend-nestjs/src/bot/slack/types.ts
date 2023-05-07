@@ -10,4 +10,5 @@ export type SlackMessage = EnvelopedEvent<{
   channel: string;
   subtype: string;
   bot_id?: string;
+  text: string;
 }>;

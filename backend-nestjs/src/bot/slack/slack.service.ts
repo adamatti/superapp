@@ -5,12 +5,17 @@ import { SlackMessage, SlackUrlVerification } from './types';
 import { ConfigService } from '@nestjs/config';
 import { SlackConfig } from '~/config';
 import { SlashCommand } from '@slack/bolt';
+import { BotEngineService } from '../engine/bot-engine.service';
 
 @Injectable({})
 export class SlackBotService {
   private slackWebClient: WebClient;
 
-  constructor(configService: ConfigService, @Inject(LoggerService) private readonly logger: LoggerService) {
+  constructor(
+    configService: ConfigService,
+    @Inject(LoggerService) private readonly logger: LoggerService,
+    @Inject(BotEngineService) private readonly botEngineService: BotEngineService,
+  ) {
     const slackConfig = configService.get<SlackConfig>('slack');
     this.slackWebClient = new WebClient(slackConfig.token);
   }
@@ -23,9 +28,11 @@ export class SlackBotService {
 
     if (request.type === 'event_callback' && request.event.subtype !== 'bot_message' && !request.event.bot_id) {
       try {
+        const text = await this.botEngineService.reply({ message: request.event.text });
+
         await this.slackWebClient.chat.postMessage({
           channel: request.event.channel,
-          text: 'test',
+          text,
         });
       } catch (error) {
         this.logger.error(error);
@@ -36,6 +43,9 @@ export class SlackBotService {
   }
 
   async handleCommands(command: SlashCommand): Promise<string> {
-    return 'Command not implemented';
+    return this.botEngineService.reply({
+      command: command.command,
+      message: command.text,
+    });
   }
 }

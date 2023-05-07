@@ -1,8 +1,9 @@
 import { Module } from '@nestjs/common';
-import { TelegramBotModule } from './telegram/bot.module';
-import { SlackBotModule } from './slack/slack.module';
+import { TelegramBotModule } from './telegram';
+import { SlackBotModule } from './slack';
+import { BotEngineModule } from './engine';
 
-const imports = [];
+const imports = [BotEngineModule];
 
 // FIXME find a way of doing it using config.ts instead of env vars
 if (process.env.TELEGRAM_TOKEN) imports.push(TelegramBotModule);

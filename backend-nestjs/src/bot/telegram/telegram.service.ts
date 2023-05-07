@@ -1,10 +1,11 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { Telegraf } from 'telegraf';
+import { Context, Telegraf } from 'telegraf';
 import { LoggerService } from '../../core';
 import { TelegramConfig, WebConfig } from '../../config';
-import { registerBotCommands } from './commands';
 import { Update } from 'telegraf/typings/core/types/typegram';
+import { BotEngineService } from '../engine/bot-engine.service';
+import { TelegramUpdate } from './types';
 
 const SIGINT = 'SIGINT';
 const SIGTERM = 'SIGTERM';
@@ -15,8 +16,8 @@ export class TelegramBotService {
 
   constructor(
     configService: ConfigService,
-    @Inject(LoggerService)
-    private readonly logger: LoggerService,
+    @Inject(LoggerService) private readonly logger: LoggerService,
+    private readonly botEngineService: BotEngineService,
   ) {
     const appEnv = configService.get<string>('appEnv');
     const telegramConfig = configService.get<TelegramConfig>('telegram');
@@ -24,7 +25,7 @@ export class TelegramBotService {
 
     this.bot = new Telegraf(telegramConfig.token);
 
-    registerBotCommands(this.bot);
+    this.registerBotCommands(this.bot);
 
     if (appEnv === 'dev' || appEnv === 'local') {
       this.bot.launch();
@@ -34,6 +35,28 @@ export class TelegramBotService {
       this.bot.telegram.setWebhook(url);
       this.shutdownHooks();
     }
+  }
+
+  private registerBotCommands(bot: Telegraf): void {
+    this.botEngineService.commands.forEach((handler) => {
+      handler.commands.forEach((c) => {
+        bot.command(c, async (ctx: Context) => {
+          const update = ctx.update as TelegramUpdate;
+          const response = await handler.reply({
+            command: c,
+            message: update.message.text,
+          });
+          ctx.reply(response);
+        });
+      });
+    });
+
+    // default
+    bot.on('message', async (ctx: Context) => {
+      const update = ctx.update as TelegramUpdate;
+      const response = await this.botEngineService.reply({ message: update.message.text });
+      ctx.reply(response);
+    });
   }
 
   /**

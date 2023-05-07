@@ -3,7 +3,7 @@ import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Update } from 'telegraf/typings/core/types/typegram';
 import { LoggerService } from '../../core';
 import { IsPublic } from '../../auth';
-import { TelegramBotService } from './bot.service';
+import { TelegramBotService } from './telegram.service';
 import { TelegramUpdate } from './types';
 
 @ApiTags('Telegram')
