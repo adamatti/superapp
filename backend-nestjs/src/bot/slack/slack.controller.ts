@@ -4,6 +4,7 @@ import { IsPublic } from '~/auth';
 import { LoggerService } from '../../core';
 import { SlackBotService } from './slack.service';
 import { SlackMessage, SlackUrlVerification } from './types';
+import { SlashCommand } from '@slack/bolt';
 
 @ApiTags('Slack')
 @Controller('/slack')
@@ -16,12 +17,21 @@ export class SlackBotController {
     private readonly slackBotService: SlackBotService,
   ) {}
 
-  @Post()
+  @Post('/events')
   @HttpCode(200)
   @Header('content-type', 'text/plain')
   @IsPublic()
   async handleUpdate(@Body() request: SlackUrlVerification | SlackMessage): Promise<string> {
-    this.logger.info(`Msg received ${JSON.stringify(request)}`);
+    this.logger.info(`Event received ${JSON.stringify(request)}`);
     return this.slackBotService.handleUpdate(request);
+  }
+
+  @Post('/commands')
+  @HttpCode(200)
+  @Header('content-type', 'text/plain')
+  @IsPublic()
+  async handleCommands(@Body() request: SlashCommand): Promise<string> {
+    this.logger.info(`Command received ${JSON.stringify(request)}`);
+    return this.slackBotService.handleCommands(request);
   }
 }

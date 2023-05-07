@@ -4,6 +4,7 @@ import { WebClient } from '@slack/web-api';
 import { SlackMessage, SlackUrlVerification } from './types';
 import { ConfigService } from '@nestjs/config';
 import { SlackConfig } from '~/config';
+import { SlashCommand } from '@slack/bolt';
 
 @Injectable({})
 export class SlackBotService {
@@ -32,5 +33,9 @@ export class SlackBotService {
     }
 
     return '';
+  }
+
+  async handleCommands(command: SlashCommand): Promise<string> {
+    return 'Command not implemented';
   }
 }
