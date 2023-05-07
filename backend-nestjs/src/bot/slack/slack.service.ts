@@ -21,7 +21,7 @@ export class SlackBotService {
       return request.challenge;
     }
 
-    if (request.type === 'event_callback' && request.event.subtype !== 'bot_message') {
+    if (request.type === 'event_callback' && request.event.subtype !== 'bot_message' && !request.event.bot_id) {
       try {
         await this.slackWebClient.chat.postMessage({
           channel: request.event.channel,

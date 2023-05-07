@@ -9,4 +9,5 @@ export interface SlackUrlVerification {
 export type SlackMessage = EnvelopedEvent<{
   channel: string;
   subtype: string;
+  bot_id?: string;
 }>;
