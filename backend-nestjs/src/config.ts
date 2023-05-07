@@ -19,6 +19,16 @@ export class TelegramConfig {
   }
 }
 
+export class SlackConfig {
+  @IsString()
+  token: string;
+
+  static build(args: Partial<SlackConfig>): SlackConfig {
+    const config = Object.assign(new SlackConfig(), args);
+    return validateOrThrow(config);
+  }
+}
+
 export class DatabaseConfig {
   @IsString()
   @IsNotEmpty()
@@ -115,6 +125,9 @@ class Config {
   @IsObject()
   telegram: TelegramConfig;
 
+  @IsObject()
+  slack: SlackConfig;
+
   static buildFromEnv(): Config {
     return Config.build({
       appEnv: `${process.env.APP_ENV || 'dev'}`,
@@ -138,6 +151,9 @@ class Config {
       }),
       telegram: TelegramConfig.build({
         token: `${process.env.TELEGRAM_TOKEN || ''}`,
+      }),
+      slack: SlackConfig.build({
+        token: `${process.env.SLACK_BOT_TOKEN || ''}`,
       }),
     });
   }

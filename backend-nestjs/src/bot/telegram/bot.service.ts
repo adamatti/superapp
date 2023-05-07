@@ -1,8 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { Telegraf, Context, Types } from 'telegraf';
-import { LoggerService } from '../core';
-import { TelegramConfig, WebConfig } from '../config';
+import { Telegraf } from 'telegraf';
+import { LoggerService } from '../../core';
+import { TelegramConfig, WebConfig } from '../../config';
 import { registerBotCommands } from './commands';
 import { Update } from 'telegraf/typings/core/types/typegram';
 
@@ -10,7 +10,7 @@ const SIGINT = 'SIGINT';
 const SIGTERM = 'SIGTERM';
 
 @Injectable()
-export class BotService {
+export class TelegramBotService {
   private readonly bot: Telegraf;
 
   constructor(
@@ -26,7 +26,7 @@ export class BotService {
 
     registerBotCommands(this.bot);
 
-    if (appEnv === 'dev') {
+    if (appEnv === 'dev' || appEnv === 'local') {
       this.bot.launch();
     } else {
       const url = `https://${webConfig.domain}/api/telegram`;

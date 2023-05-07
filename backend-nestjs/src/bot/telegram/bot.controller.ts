@@ -1,16 +1,16 @@
 import { Body, Controller, Inject, Post } from '@nestjs/common';
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Update } from 'telegraf/typings/core/types/typegram';
-import { LoggerService } from '../core';
-import { IsPublic } from '../auth';
-import { BotService } from './bot.service';
+import { LoggerService } from '../../core';
+import { IsPublic } from '../../auth';
+import { TelegramBotService } from './bot.service';
 import { TelegramUpdate } from './types';
 
 @ApiTags('Telegram')
 @Controller('/telegram')
-export class BotController {
+export class TelegramBotController {
   constructor(
-    private readonly botService: BotService,
+    private readonly botService: TelegramBotService,
     @Inject(LoggerService)
     private readonly logger: LoggerService,
   ) {}
