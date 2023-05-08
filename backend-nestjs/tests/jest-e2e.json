@@ -9,9 +9,6 @@
   "transform": {
     "^.+\\.(t|j)s$": "ts-jest"
   },
-  "transformIgnorePatterns": [
-    "<rootDir>/node_modules/(?!chatgpt)"
-  ],
   "collectCoverageFrom": [
     "**/*.(t|j)s"
   ],

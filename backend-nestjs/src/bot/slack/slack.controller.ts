@@ -1,6 +1,6 @@
 import { Body, Controller, Header, HttpCode, Inject, Post } from '@nestjs/common';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
-import { IsPublic } from '~/auth';
+import { IsPublic } from '../../auth';
 import { LoggerService } from '../../core';
 import { SlackBotService } from './slack.service';
 import { SlackMessage, SlackUrlVerification } from './types';

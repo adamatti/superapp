@@ -1,8 +1,14 @@
-import { ChatGPTAPI, ChatMessage } from 'chatgpt';
+// FIXME fix typescript issues
+// import { ChatGPTAPI, ChatMessage } from 'chatgpt';
 import { Injectable } from '@nestjs/common';
+
+interface ChatMessage {
+  text: string;
+}
 
 @Injectable({})
 export class ChatGptService {
+  /*
   private readonly api: ChatGPTAPI;
 
   constructor() {
@@ -12,10 +18,13 @@ export class ChatGptService {
     }
     this.api = new ChatGPTAPI({ apiKey });
   }
-
+ */
   async sendMessage(text: string): Promise<ChatMessage> {
     console.log('Calling chat gpt');
+    /*
     const gptResponse: ChatMessage = await this.api.sendMessage(text, {});
     return gptResponse;
+    */
+    return null;
   }
 }
