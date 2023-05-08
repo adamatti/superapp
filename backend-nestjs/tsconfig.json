@@ -1,7 +1,11 @@
 {
   "compilerOptions": {
     "module": "commonjs",
+    "allowJs": true,
+    "esModuleInterop": true,
     "declaration": true,
+    "isolatedModules": true,
+    "noEmit": true,
     "removeComments": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
@@ -19,8 +23,17 @@
     "noFallthroughCasesInSwitch": false,
     "resolveJsonModule": true,
     "paths": {
-      "~/*": ["src/*"],
-    }
+      "~/*": [
+        "src/*"
+      ],
+    },
   },
-  "exclude": ["node_modules"]
+  "exclude": [
+    "node_modules",
+    "build",
+    "dist"
+  ],
+  "include": [
+    "**/*.ts"
+  ]
 }
